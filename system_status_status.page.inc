@@ -38,12 +38,12 @@ foreach($drupal_modules as $name) {
   }
 
   if (variable_get('system_status_service_allow_drupalstatus', 1) == 1) {
-    $res = SystemStatusEncryption::encrypt(json_encode(array("system_status" => $res)));
+    $res = SystemStatusEncryption::encrypt(json_encode(array("system_status" => $res, "drupal_version" => "6")));
     header('Content-Type', 'application/json');
     echo json_encode(array("system_status" => "encrypted", "data" => $res));
   }
   else {
     header('Content-Type', 'application/json');
-    echo json_encode(array("system_status" => $res));
+    echo json_encode(array("system_status" => $res, "drupal_version" => "6"));
   }
 }
