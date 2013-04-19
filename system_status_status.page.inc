@@ -3,88 +3,47 @@
  * @file
  * Logic for system_status output
  */
+require_once('system_status_encryption.inc');
 
 /**
  * Return JSON formatted module information.
  */
 function system_status_status_page() {
-  $system_modules = system_list('module_enabled');
+  $drupal_modules = module_list();
+//var_dump($system_modules);
+
+$system_modules = array();
+
+foreach($drupal_modules as $name) {
+  $path = drupal_get_path('module', $name) . '/' . $name . '.info';
+  $info = drupal_parse_info_file($path);
+  $system_modules[$info['project']] = $info;
+}
 
   // Needless initialisation, but hey.
   $res = array(
     "core" => array(),
     "contrib" => array(),
-    "custom" => array(),
+    "custom" => "disabled",
   );
 
-  foreach ($system_modules as $module => $module_info) {
-    $filename = $module_info->filename;
-
-    // Match for custom modules.
-    if (variable_get('system_status_do_match_custom', '0')) {
-      $regex = variable_get('system_status_preg_match_custom', '{^sites\/([A-z,\.,\-]+)\/modules\/custom\/*}');
-      if (preg_match($regex, $filename)) {
-        // if this is part of a project, only set the project.
-        if(isset($module_info->info['project'])) {
-          $res['custom'][$module_info->info['project']] = array("version" => $module_info->info['version']);
-        }
-        else {
-          $res['custom'][$module] = array("version" => $module_info->info['version']);
-        }
+  foreach ($system_modules as $module) {
+    if(isset($module['project'])) {
+      if($module['project'] == "drupal") {
+        $res['core']['drupal'] = array("version" => $module['version']);
+      } else {
+        $res['contrib'][$module['project']] = array("version" => $module['version']);
       }
-    }
-    else {
-      $res['custom'] = "disabled";
-    }
-
-    // Match for contrib modules.
-    if (variable_get('system_status_do_match_contrib', '1')) {
-      if (variable_get('system_status_match_contrib_mode', 0) == 0) {
-        $regex = '{^sites\/([A-z,\.,\-]+)\/modules\/*}';
-      }
-      elseif (variable_get('system_status_match_contrib_mode', 0) == 1) {
-        $regex = '{^sites\/([A-z,\.,\-]+)\/modules\/contrib\/*}';
-      }
-      else {
-        $regex = variable_get('system_status_preg_match_contrib', '{^sites\/([A-z,\.,\-]+)\/modules\/contrib\/*}');
-      }
-
-      if (preg_match($regex, $filename)) {
-        // if this is part of a project, only set the project.
-        if(isset($module_info->info['project'])) {
-          $res['contrib'][$module_info->info['project']] = array("version" => $module_info->info['version']);
-        }
-        else {
-          $res['contrib'][$module] = array("version" => $module_info->info['version']);
-        }
-      }
-    }
-    else {
-      $res['contrib'] = "disabled";
-    }
-
-    // Core modules.
-    if (variable_get('system_status_do_match_core', '1')) {
-      if (strtolower($module_info->info['package']) == "core") {
-        // if this is part of a project, only set the project.
-        if(isset($module_info->info['project'])) {
-          $res['core'][$module_info->info['project']] = array("version" => $module_info->info['version']);
-        }
-        else {
-          $res['core'][$module] = array("version" => $module_info->info['version']);
-        }
-      }
-    }
-    else {
-      $res['core'] = "disabled";
     }
   }
 
-  if (variable_get('system_status_need_encryption', 0) == 1 || variable_get('system_status_service_allow_drupalstatus', 1) == 1) {
-    $res = SystemStatusEncryption::encrypt(drupal_json_encode(array("system_status" => $res)));
-    drupal_json_output(array("system_status" => "encrypted", "data" => $res));
+  if (variable_get('system_status_service_allow_drupalstatus', 1) == 1) {
+    $res = SystemStatusEncryption::encrypt(json_encode(array("system_status" => $res)));
+    header('Content-Type', 'application/json');
+    echo json_encode(array("system_status" => "encrypted", "data" => $res));
   }
   else {
-    drupal_json_output(array("system_status" => $res));
+    header('Content-Type', 'application/json');
+    echo json_encode(array("system_status" => $res));
   }
 }

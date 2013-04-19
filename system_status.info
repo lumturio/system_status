@@ -1,5 +1,5 @@
 name = System Status
 description = "Provides an overview of all the available updates for your Drupal website using an external service."
-core = 7.x
+core = 6.x
 configure = admin/config/system/system_status
 files[] = system_status_encryption.inc

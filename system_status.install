@@ -4,6 +4,8 @@
  * Clean up file for system_status
  */
 
+require_once('system_status_encryption.inc');
+
 /**
  * Implements hook_uninstall().
  *
@@ -11,17 +13,7 @@
  */
 function system_status_uninstall() {
   variable_del('system_status_service_allow_drupalstatus');
-  variable_del('system_status_public_allow_public');
-  variable_del('system_status_public_allow_ips');
-  variable_del('system_status_do_match_core');
-  variable_del('system_status_do_match_contrib');
-  variable_del('system_status_match_contrib_mode');
-  variable_del('system_status_preg_match_contrib');
-  variable_del('system_status_do_match_custom');
-  variable_del('system_status_preg_match_custom');
   variable_del('system_status_token');
-  variable_del('system_status_need_protect_token');
-  variable_del('system_status_need_encryption');
   variable_del('system_status_encrypt_token');
 }
 
@@ -33,19 +25,4 @@ function system_status_uninstall() {
 function system_status_install() {
   variable_set('system_status_token', SystemStatusEncryption::getToken());
   variable_set('system_status_encrypt_token', SystemStatusEncryption::getToken());
-}
-
-/**
- * Creates an unique token.
- *
- * Tokens introduced in 7.x-1.x.
- */
-function system_status_update_7200() {
-  if (variable_get('system_status_token', 0) === 0) {
-    variable_set('system_status_token', SystemStatusEncryption::getToken());
-  }
-
-  if (variable_get('system_status_encrypt_token', 0) === 0) {
-    variable_set('system_status_encrypt_token', SystemStatusEncryption::getToken());
-  }
 }

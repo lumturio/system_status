@@ -58,32 +58,19 @@ function system_status_menu() {
 
 /**
  * Access callback: Check authorized IP.
- * 
+ *
  * @see system_status_menu()
  */
 function system_status_access_callback($token = FALSE) {
-
-  if ((variable_get('system_status_need_protect_token', 0) == 1 || variable_get('system_status_service_allow_drupalstatus', 1) == 1) && $token !== variable_get('system_status_token', "")) {
-    return FALSE;
-  }
+	if($token !== variable_get('system_status_token', "")) {
+		return FALSE;
+	}
 
   $ip_address = ip_address();
 
   if (variable_get('system_status_service_allow_drupalstatus', 1) == 1) {
     if ($ip_address == gethostbyname("status.drupalstatus.org")) {
       return TRUE;
-    }
-  }
-
-  if (variable_get('system_status_public_allow_public', 0) == 1) {
-    // I took the easy way out here since i didn't want
-    // to bother writing something to match v6 subnets.
-    $allowed_ips = explode(',', variable_get('system_status_public_allow_ips', '127.0.0.1,::1'));
-
-    foreach ($allowed_ips as &$address) {
-      if ($ip_address === $address) {
-        return TRUE;
-      }
     }
   }
 
