@@ -20,6 +20,13 @@ foreach($drupal_modules as $name) {
   $system_modules[$info['project']] = $info;
 }
 
+// we want to do our best to guess the correct drupal version
+if(isset($drupal_modules['system'])) {
+  $path = drupal_get_path('module', 'system') . '/system.info';
+  $info = drupal_parse_info_file($path);
+  $system_modules[$info['project']] = $info;
+}
+
   // Needless initialisation, but hey.
   $res = array(
     "core" => array(),
