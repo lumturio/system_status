@@ -70,7 +70,7 @@ function system_status_access_callback($token = FALSE) {
   $ip_address = ip_address();
 
   if (variable_get('system_status_service_allow_drupalstatus', 1) == 1) {
-    if ($ip_address == gethostbyname("status.drupalstatus.org")) {
+    if ($ip_address == gethostbyname("status.drupalstatus.org.")) {
       return TRUE;
     }
   }
