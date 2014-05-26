@@ -9,7 +9,6 @@
  */
 function system_status_status_page() {
   $system_modules = system_list('module_enabled');
-  $system_themes = list_themes(TRUE);
 
   // Needless initialisation, but hey.
   $res = array(
@@ -18,18 +17,6 @@ function system_status_status_page() {
     "custom" => array(),
   );
 
-  // Go over Themes
-  if (variable_get('system_status_do_match_contrib', '1')) {
-     foreach($system_themes as $theme) {
-        if(isset($theme->info['package']) && $theme->info['package'] == 'Core')
-          continue;
-
-        if(isset($theme->info['version']))
-          $res['contrib'][$theme->name] = array("version" => $theme->info['version']);
-     }
-  }
-
-  // Go over Modules
   foreach ($system_modules as $module => $module_info) {
     $filename = $module_info->filename;
 
@@ -86,6 +73,10 @@ function system_status_status_page() {
         else {
           $res['core'][$module] = array("version" => $module_info->info['version']);
         }
+      }
+      // doublecheck if drupal version is reported, if not add bootstrap define
+      if(!isset($res['core']['drupal'])) {
+         $res['core']['drupal'] = array("version" => VERSION);
       }
     }
     else {
