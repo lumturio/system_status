@@ -4,7 +4,7 @@
  * Clean up file for system_status
  */
 
-require_once('system_status_encryption.inc');
+require_once ('system_status_encryption.inc');
 
 /**
  * Implements hook_uninstall().
@@ -26,3 +26,4 @@ function system_status_install() {
   variable_set('system_status_token', SystemStatusEncryption::getToken());
   variable_set('system_status_encrypt_token', SystemStatusEncryption::getToken());
 }
+

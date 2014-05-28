@@ -3,22 +3,22 @@
  * @file
  * Logic for system_status output
  */
-require_once('system_status_encryption.inc');
+
+require_once ('system_status_encryption.inc');
 
 /**
  * Return JSON formatted module information.
  */
 function system_status_status_page() {
   $drupal_modules = module_list();
-//var_dump($system_modules);
   $system_themes = list_themes(TRUE);
 
-$system_modules = array();
-foreach($drupal_modules as $name) {
-  $path = drupal_get_path('module', $name) . '/' . $name . '.info';
-  $info = drupal_parse_info_file($path);
-  $system_modules[$info['project']] = $info;
-}
+  $system_modules = array();
+  foreach ($drupal_modules as $name) {
+    $path = drupal_get_path('module', $name) . '/' . $name . '.info';
+    $info = drupal_parse_info_file($path);
+    $system_modules[$info['project']] = $info;
+  }
 
   // Needless initialisation, but hey.
   $res = array(
@@ -28,8 +28,8 @@ foreach($drupal_modules as $name) {
   );
 
   foreach ($system_modules as $module) {
-    if(isset($module['project'])) {
-      if($module['project'] == "drupal") {
+    if (isset($module['project'])) {
+      if ($module['project'] == "drupal") {
         $res['core']['drupal'] = array("version" => $module['version']);
       } else {
         $res['contrib'][$module['project']] = array("version" => $module['version']);
@@ -37,11 +37,11 @@ foreach($drupal_modules as $name) {
     }
   }
 
-foreach($system_themes as $theme) {
-  if(isset($theme->info['project']) && $theme->info['project'] == "drupal")
+foreach ($system_themes as $theme) {
+  if (isset($theme->info['project']) && $theme->info['project'] == "drupal")
     continue;
 
-  if(isset($theme->info['version']) && isset($theme->info['project']))
+  if (isset($theme->info['version']) && isset($theme->info['project']))
     $res['contrib'][$theme->info['project']] = array("version" => $theme->info['version']);
 }
 

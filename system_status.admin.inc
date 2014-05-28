@@ -30,10 +30,10 @@ function system_status_form(&$form_state) {
 
 function system_status_add_site($form, &$form_state) {
   global $base_url;
-  $siteUrl = urlencode($base_url);
-  $siteUrl .= "|" . variable_get('system_status_token', 'Error-no-token');
-  $siteUrl .= "|" . variable_get('system_status_encrypt_token', 'Error-no-token');
-  $url = "https://www.drupalstatus.org/addsite?op=addSite&siteUrl=$siteUrl";
+  $site_url = urlencode($base_url);
+  $site_url .= "|" . variable_get('system_status_token', 'Error-no-token');
+  $site_url .= "|" . variable_get('system_status_encrypt_token', 'Error-no-token');
+  $url = "https://www.drupalstatus.org/addsite?op=addSite&siteUrl=$site_url";
 
   if (module_exists('overlay') && overlay_get_mode() == 'child') {
     unset($_GET['destination']);

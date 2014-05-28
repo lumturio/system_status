@@ -62,9 +62,9 @@ function system_status_menu() {
  * @see system_status_menu()
  */
 function system_status_access_callback($token = FALSE) {
-	if($token !== variable_get('system_status_token', "")) {
-		return FALSE;
-	}
+  if($token !== variable_get('system_status_token', "")) {
+    return FALSE;
+  }
 
   $ip_address = ip_address();
 
