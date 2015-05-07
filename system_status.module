@@ -86,6 +86,5 @@ function system_status_access_callback($token = FALSE) {
       }
     }
   }
-
   return FALSE;
 }
