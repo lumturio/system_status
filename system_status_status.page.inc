@@ -60,7 +60,7 @@ function system_status_status_page() {
     }
   }
 
-  if ((variable_get('system_status_need_encryption', 0) == 1 || variable_get('system_status_service_allow_drupalstatus', 1) == 1) && extension_loaded('mcrypt')) {
+  if (extension_loaded('mcrypt')) {
     $res = SystemStatusEncryption::encrypt(drupal_json_encode(array("system_status" => $res)));
     drupal_json_output(array("system_status" => "encrypted", "data" => $res, "drupal_version" => "7"));
   }
