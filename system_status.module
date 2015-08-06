@@ -57,21 +57,14 @@ function system_status_menu() {
 }
 
 /**
- * Access callback: Check authorized IP.
+ * Access callback: Verify the used token
  *
  * @see system_status_menu()
  */
 function system_status_access_callback($token = FALSE) {
-	if($token !== variable_get('system_status_token', "")) {
-		return FALSE;
-	}
 
-  $ip_address = trim(ip_address());
-
-  if (variable_get('system_status_service_allow_drupalstatus', 1) == 1) {
-    if ($ip_address == gethostbyname("status.drupalstatus.org")) {
-      return TRUE;
-    }
+  if ($token == variable_get('system_status_token', "")) {
+    return TRUE;
   }
 
   return FALSE;
