@@ -44,7 +44,7 @@ if(isset($drupal_modules['system'])) {
     }
   }
 
-  if (variable_get('system_status_service_allow_drupalstatus', 1) == 1 && extension_loaded('mcrypt')) {
+  if (extension_loaded('mcrypt')) {
     $res = SystemStatusEncryption::encrypt(json_encode(array("system_status" => $res)));
     header('Content-Type: application/json');
     echo json_encode(array("system_status" => "encrypted", "data" => $res, "drupal_version" => "6"));
