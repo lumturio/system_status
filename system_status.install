@@ -12,9 +12,9 @@ require_once('system_status_encryption.inc');
  * Removes all settings used by the module.
  */
 function system_status_uninstall() {
-  variable_del('system_status_service_allow_drupalstatus');
   variable_del('system_status_token');
   variable_del('system_status_encrypt_token');
+  variable_del('system_status_service_allow_external');
 }
 
 /**
