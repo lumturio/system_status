@@ -45,7 +45,7 @@ function system_status_menu() {
 
   $items['admin/config/system/system_status'] = array(
     'title' => 'System Status',
-    'description' => 'Configuration for System status module',
+    'description' => ' Drupal module and core monitor',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('system_status_form'),
     'file' => 'system_status.admin.inc',
