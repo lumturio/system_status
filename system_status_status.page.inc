@@ -16,8 +16,7 @@ function system_status_status_page() {
     "core" => array(),
     "contrib" => array(),
     "profile" => array(),
-    "theme" => array(),
-    "custom" => "disabled",
+    "theme" => array()
   );
 
   // Go over Themes
