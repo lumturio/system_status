@@ -15,6 +15,8 @@ function system_status_status_page() {
   $res = array(
     "core" => array(),
     "contrib" => array(),
+    "profile" => array(),
+    "theme" => array(),
     "custom" => "disabled",
   );
 
@@ -23,41 +25,49 @@ function system_status_status_page() {
     if(isset($theme->info['package']) && $theme->info['package'] == 'Core')
       continue;
 
-    if(isset($theme->info['version']))
+    if(isset($theme->info['version'])) {
+      //In next updates we will move themes from contrib to theme so we can GUI them differently
       $res['contrib'][$theme->name] = array("version" => $theme->info['version']);
+      $res['theme'][$theme->name] = array("version" => $theme->info['version']);
+    }
   }
 
   // Go over Modules
   foreach ($system_modules as $module => $module_info) {
-    $filename = $module_info->filename;
-
-    // Match for contrib modules.
-    $regex = '{^sites\/([A-z,\.,\-]+)\/modules\/*}';
-    if (preg_match($regex, $filename)) {
-      // if this is part of a project, only set the project.
-      if(isset($module_info->info['project'])) {
-        $res['contrib'][$module_info->info['project']] = array("version" => $module_info->info['version']);
-      }
-      else {
-        $res['contrib'][$module] = array("version" => $module_info->info['version']);
-      }
-    }
 
     // Match for core modules.
     if (strtolower($module_info->info['package']) == "core") {
-      // if this is part of a project, only set the project.
       if(isset($module_info->info['project'])) {
         $res['core'][$module_info->info['project']] = array("version" => $module_info->info['version']);
-      }
-      else {
+      } else {
         $res['core'][$module] = array("version" => $module_info->info['version']);
       }
+
+      continue;
     }
 
-    // doublecheck if drupal version is reported, if not add bootstrap define
-    if(!isset($res['core']['drupal'])) {
-       $res['core']['drupal'] = array("version" => VERSION);
+    // Match for installation profiles
+    if (strpos($module_info->filename,'.profile') !== false) {
+      if(isset($module_info->info['project'])) {
+        $res['profile'][$module_info->info['project']] = array("version" => $module_info->info['version']);
+      } else {
+        $res['profile'][$module] = array("version" => $module_info->info['version']);
+      }
+
+      continue;
     }
+
+    // What now remains must be modules
+    if(isset($module_info->info['project'])) {
+      $res['contrib'][$module_info->info['project']] = array("version" => $module_info->info['version']);
+    } else {
+      $res['contrib'][$module] = array("version" => $module_info->info['version']);
+    }
+  }
+
+  // doublecheck if drupal version is reported, if not add bootstrap define
+  if(!isset($res['core']['drupal'])) {
+    $res['core']['drupal'] = array("version" => VERSION);
   }
 
   if (extension_loaded('mcrypt')) {
