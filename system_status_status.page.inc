@@ -30,8 +30,7 @@ if(isset($drupal_modules['system'])) {
   // Needless initialisation, but hey.
   $res = array(
     "core" => array(),
-    "contrib" => array(),
-    "custom" => "disabled",
+    "contrib" => array()
   );
 
   foreach ($system_modules as $module) {
