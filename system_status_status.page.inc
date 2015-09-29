@@ -43,13 +43,18 @@ if(isset($drupal_modules['system'])) {
     }
   }
 
+  //Last resort, if we cannot figure out used Drupal version.
+  if(sizeof($res['core']) == 0) {
+	$res['core']['drupal'] = array("version" => VERSION);
+  }
+
   if (extension_loaded('mcrypt')) {
     $res = SystemStatusEncryption::encrypt(json_encode(array("system_status" => $res)));
     header('Content-Type: application/json');
-    echo json_encode(array("system_status" => "encrypted", "data" => $res, "drupal_version" => "6"));
+    echo json_encode(array("system_status" => "encrypted", "data" => $res, "drupal_version" => "6", "engine_version" => "DRUPAL6"));
   }
   else {
     header('Content-Type: application/json');
-    echo json_encode(array("system_status" => $res, "drupal_version" => "6"));
+    echo json_encode(array("system_status" => $res, "drupal_version" => "6", "engine_version" => "DRUPAL6"));
   }
 }
